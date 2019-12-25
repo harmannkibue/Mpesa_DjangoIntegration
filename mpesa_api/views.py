@@ -4,6 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from requests.auth import HTTPBasicAuth
 import json
 
+from . ngrok import ngrokAPIendpoints
 from . mpesa_credentials import MpesaAccessToken, LipanaMpesaPpassword
 from django.views.decorators.csrf import csrf_exempt
 from .models import MpesaPayment
@@ -48,8 +49,9 @@ def register_urls(request):
     headers = {"Authorization": "Bearer %s" % access_token}
     options = {"ShortCode": LipanaMpesaPpassword.Test_c2b_shortcode,
                "ResponseType": "Completed",
-               "ConfirmationURL": "https://9dfc057d.ngrok.io/api/v1/c2b/confirmation",
-               "ValidationURL": "https://9dfc057d.ngrok.io/api/v1/c2b/validation"}
+               "ConfirmationURL": ngrokAPIendpoints.ConfirmationURL,
+               "ValidationURL": ngrokAPIendpoints.ValidationURL
+               }
     response = requests.post(api_url, json=options, headers=headers)
     return HttpResponse(response.text)
 
